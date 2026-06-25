@@ -111,9 +111,23 @@ import { download } from '@/utils/request'
 // 'virtual:svg-icons-register' 是 vite-plugin-svg-icons 提供的"虚拟模块"
 // 它会把 src/assets/icons 下的所有 SVG 文件打包成一个 sprite（雪碧图）
 // 引入即生效，不需要变量接收
+// 'virtual:svg-icons-register' 是 vite-plugin-svg-icons 提供的"虚拟模块"
+// 它会把 src/assets/icons 下的所有 SVG 文件打包成一个 sprite（雪碧图）
+// 引入即生效，不需要变量接收
+//
+// 为什么知道去 src/assets/icons 找文件？
+// 答案在 vite.config.js 里配置的！vite-plugin-svg-icons 插件初始化时指定了 iconDirs 路径：
+//   createSvgIconsPlugin({
+//     iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
+//     symbolId: 'icon-[dir]-[name]'
+//   })
+// 所以这个虚拟模块是"有记忆的"，打包时会自动扫描该目录下的所有 .svg 文件
+
+
 import 'virtual:svg-icons-register'
 
 // SvgIcon 组件 —— 用来在模板里显示 SVG 图标，如 <svg-icon icon-class="user" />
+
 import SvgIcon from '@/components/SvgIcon'
 
 // elementIcons 插件 —— 把 Element Plus 的图标库批量注册为全局组件
@@ -252,6 +266,7 @@ app.component('Editor', Editor)
 // Java 类比：
 //   相当于 Spring 的 @EnableXxx 注解，开启某项能力。
 
+
 app.use(router)        // 启用路由系统
 app.use(store)         // 启用 Pinia 状态管理
 app.use(plugins)       // 启用项目自定义插件
@@ -259,6 +274,7 @@ app.use(elementIcons)  // 启用 Element Plus 图标全局注册
 
 // 这一行不是 use，而是直接注册一个全局组件 svg-icon
 // 注意它的命名：'svg-icon'（kebab-case），模板里写 <svg-icon /> 调用
+
 app.component('svg-icon', SvgIcon)
 
 
